@@ -96,13 +96,55 @@ export const StaffLoginPage: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-3.5 rounded-xl font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition-all"
+            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-3.5 rounded-xl font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition-all cursor-pointer"
           >
             Authenticate & Access Dashboard <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <div className="text-center text-[10px] text-slate-500 flex items-center justify-center gap-1">
+        {/* Quick Demo Login Presets */}
+        <div className="pt-3 border-t border-slate-800 space-y-2.5">
+          <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block text-center">
+            ⚡ One-Click Demo Quick Login
+          </span>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                const mockUser = {
+                  id: 'u-kitchen-001',
+                  name: 'Head Chef Marcus',
+                  role: 'KitchenStaff' as const
+                };
+                auth.login(mockUser, `mock-jwt-token-${Date.now()}`);
+                navigate('/kitchen/dashboard');
+              }}
+              className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 transition-all hover:scale-105 cursor-pointer"
+            >
+              <ChefHat className="w-3.5 h-3.5 text-amber-400" />
+              <span>Demo Kitchen</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const mockUser = {
+                  id: 'u-rider-001',
+                  name: 'Rider Tunde Bakare',
+                  role: 'DispatchRider' as const
+                };
+                auth.login(mockUser, `mock-jwt-token-${Date.now()}`);
+                navigate('/rider/dashboard');
+              }}
+              className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 transition-all hover:scale-105 cursor-pointer"
+            >
+              <Bike className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Demo Rider</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="text-center text-[10px] text-slate-500 flex items-center justify-center gap-1 pt-1">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Protected by Role-Based Access Control (RBAC)
         </div>
 
