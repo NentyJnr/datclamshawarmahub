@@ -72,7 +72,7 @@ export const Navbar: React.FC<{ onNavigateHome?: () => void; onNavigateMenu?: ()
             <span>HOW IT WORKS</span>
           </button>
 
-          {activeOrder.order && (
+          {activeOrder.order && activeOrder.order.orderStatus !== 'Delivered' && activeOrder.order.orderStatus !== 'Cancelled' && (
             <Link 
               to={`/track/${activeOrder.order.id}`}
               className="text-amber-900 font-extrabold flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-100 border border-amber-300 text-xs shadow-sm transition-all hover:bg-amber-200 animate-pulse"
