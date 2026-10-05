@@ -164,7 +164,7 @@ export const CheckoutPage: React.FC = () => {
     }
 
     const selectedRiderObj = availableRiders.find((r) => r.riderId === selectedRiderId);
-    const mockCode = `CAT-${Math.floor(100 + Math.random() * 900)}`;
+    const mockCode = `DAT-${Math.floor(100 + Math.random() * 900)}`;
     const mockOrderId = `ord-${Date.now()}`;
 
     const newOrder = {
