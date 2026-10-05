@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Clock, CheckCircle2, Bike, ChefHat, PackageCheck, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Clock, CheckCircle2, Bike, ChefHat, PackageCheck, AlertCircle, XCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { MapComponent } from '../components/MapComponent';
 import { signalRService } from '../services/SignalRService';
@@ -91,6 +91,22 @@ export const TrackingPage: React.FC = () => {
           <p className="text-slate-400 text-sm mt-1">
             Delivering to: <span className="text-slate-200 font-semibold">{currentOrder.formattedAddress}</span>
           </p>
+
+          {currentOrder.orderStatus === 'Preparing' && (
+            <button
+              onClick={() => {
+                if (window.confirm('Are you sure you want to cancel this active order?')) {
+                  activeOrder.clearActiveOrder();
+                  navigate('/');
+                }
+              }}
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg border border-rose-500/30 transition-all cursor-pointer"
+              title="Cancel Order"
+            >
+              <XCircle className="w-3.5 h-3.5" />
+              <span>Cancel Order</span>
+            </button>
+          )}
         </div>
 
         {/* Verification Code Display */}

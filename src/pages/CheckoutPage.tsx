@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Navigation, Bike, ShoppingBag, ShieldCheck, ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
+import { MapPin, Navigation, Bike, ShoppingBag, ShieldCheck, ArrowLeft, Loader2, AlertCircle, Plus, Minus, Trash2, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { AvailableRider } from '../types';
 import { DatclamLogo } from '../components/DatclamLogo';
@@ -373,16 +373,69 @@ export const CheckoutPage: React.FC = () => {
         {/* Order Summary (5 Columns) */}
         <div className="lg:col-span-5">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl sticky top-28 space-y-6">
-            <h2 className="text-xl font-bold text-white border-b border-slate-800 pb-4">Order Summary</h2>
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+              <h2 className="text-xl font-bold text-white">Order Summary</h2>
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm('Are you sure you want to cancel this draft order and clear your cart?')) {
+                    cart.clearCart();
+                    navigate('/');
+                  }
+                }}
+                className="text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg border border-rose-500/30 flex items-center gap-1.5 transition-all cursor-pointer"
+                title="Cancel Draft Order"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Cancel Order</span>
+              </button>
+            </div>
 
-            <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
+            <div className="space-y-4 max-h-72 overflow-y-auto pr-2 divide-y divide-slate-800/60">
               {cart.items.map((item) => (
-                <div key={item.menuItem.id} className="flex items-center justify-between text-sm">
-                  <div>
-                    <span className="font-semibold text-white block">{item.menuItem.name}</span>
-                    <span className="text-xs text-slate-500">Qty: {item.quantity} × ₦{item.menuItem.price.toLocaleString()}</span>
+                <div key={item.menuItem.id} className="pt-3 first:pt-0 flex flex-col gap-2 text-sm">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <span className="font-bold text-white block text-sm">{item.menuItem.name}</span>
+                      <span className="text-xs text-slate-400">₦{item.menuItem.price.toLocaleString()} each</span>
+                    </div>
+                    <span className="font-extrabold text-slate-100 shrink-0">
+                      ₦{(item.menuItem.price * item.quantity).toLocaleString()}
+                    </span>
                   </div>
-                  <span className="font-bold text-slate-200">₦{(item.menuItem.price * item.quantity).toLocaleString()}</span>
+
+                  {/* Quantity & Remove Item Action Bar */}
+                  <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center gap-2 bg-slate-950 px-2.5 py-1 rounded-xl border border-slate-800">
+                      <button
+                        type="button"
+                        onClick={() => cart.updateQuantity(item.menuItem.id, item.quantity - 1)}
+                        className="w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center font-bold text-xs transition-all active:scale-95 cursor-pointer"
+                        title="Decrease quantity"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="font-black text-white text-xs px-1 min-w-[20px] text-center">{item.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() => cart.updateQuantity(item.menuItem.id, item.quantity + 1)}
+                        className="w-6 h-6 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center font-bold text-xs transition-all active:scale-95 cursor-pointer"
+                        title="Increase quantity"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => cart.removeFromCart(item.menuItem.id)}
+                      className="text-xs text-rose-400 hover:text-rose-300 p-1.5 rounded-lg hover:bg-rose-500/10 transition-colors flex items-center gap-1 font-semibold cursor-pointer"
+                      title="Remove item from cart"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Remove</span>
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
