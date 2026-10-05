@@ -16,8 +16,8 @@ export const StaffLoginPage: React.FC = () => {
     e.preventDefault();
 
     const mockUser = {
-      id: selectedRole === 'KitchenStaff' ? 'u-kitchen-001' : 'u-rider-001',
-      name: selectedRole === 'KitchenStaff' ? 'Head Chef Marcus' : 'Rider Tunde Bakare',
+      id: selectedRole === 'KitchenStaff' ? 'u-kitchen-001' : selectedRole === 'DispatchRider' ? 'u-rider-001' : 'u-admin-001',
+      name: selectedRole === 'KitchenStaff' ? 'Head Chef Marcus' : selectedRole === 'DispatchRider' ? 'Rider Tunde Bakare' : 'Store Admin Victoria',
       role: selectedRole
     };
 
@@ -26,8 +26,10 @@ export const StaffLoginPage: React.FC = () => {
 
     if (selectedRole === 'KitchenStaff') {
       navigate('/kitchen/dashboard');
-    } else {
+    } else if (selectedRole === 'DispatchRider') {
       navigate('/rider/dashboard');
+    } else {
+      navigate('/admin/dashboard');
     }
   };
 
@@ -44,28 +46,39 @@ export const StaffLoginPage: React.FC = () => {
         </div>
 
         {/* Role Selector Tabs */}
-        <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+        <div className="grid grid-cols-3 gap-1.5 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
           <button
             type="button"
             onClick={() => setSelectedRole('KitchenStaff')}
-            className={`py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
+            className={`py-2.5 rounded-xl font-bold text-[11px] flex items-center justify-center gap-1.5 transition-all ${
               selectedRole === 'KitchenStaff'
                 ? 'bg-orange-500 text-white shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <ChefHat className="w-4 h-4" /> Kitchen Staff
+            <ChefHat className="w-3.5 h-3.5" /> Kitchen
           </button>
           <button
             type="button"
             onClick={() => setSelectedRole('DispatchRider')}
-            className={`py-3 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all ${
+            className={`py-2.5 rounded-xl font-bold text-[11px] flex items-center justify-center gap-1.5 transition-all ${
               selectedRole === 'DispatchRider'
                 ? 'bg-orange-500 text-white shadow-md'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Bike className="w-4 h-4" /> Dispatch Rider
+            <Bike className="w-3.5 h-3.5" /> Rider
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelectedRole('Admin')}
+            className={`py-2.5 rounded-xl font-bold text-[11px] flex items-center justify-center gap-1.5 transition-all ${
+              selectedRole === 'Admin'
+                ? 'bg-orange-500 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5" /> Admin
           </button>
         </div>
 
@@ -75,7 +88,13 @@ export const StaffLoginPage: React.FC = () => {
             <input
               type="email"
               required
-              placeholder={selectedRole === 'KitchenStaff' ? 'kitchen@datclam.com' : 'rider@datclam.com'}
+              placeholder={
+                selectedRole === 'KitchenStaff'
+                  ? 'kitchen@datclam.com'
+                  : selectedRole === 'DispatchRider'
+                  ? 'rider@datclam.com'
+                  : 'admin@datclam.com'
+              }
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-orange-500 transition-colors"
@@ -107,7 +126,7 @@ export const StaffLoginPage: React.FC = () => {
           <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest block text-center">
             ⚡ One-Click Demo Quick Login
           </span>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
             <button
               type="button"
               onClick={() => {
@@ -119,10 +138,10 @@ export const StaffLoginPage: React.FC = () => {
                 auth.login(mockUser, `mock-jwt-token-${Date.now()}`);
                 navigate('/kitchen/dashboard');
               }}
-              className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 transition-all hover:scale-105 cursor-pointer"
+              className="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] flex items-center justify-center gap-1 border border-slate-700 transition-all hover:scale-105 cursor-pointer"
             >
               <ChefHat className="w-3.5 h-3.5 text-amber-400" />
-              <span>Demo Kitchen</span>
+              <span>Kitchen</span>
             </button>
 
             <button
@@ -136,10 +155,27 @@ export const StaffLoginPage: React.FC = () => {
                 auth.login(mockUser, `mock-jwt-token-${Date.now()}`);
                 navigate('/rider/dashboard');
               }}
-              className="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 border border-slate-700 transition-all hover:scale-105 cursor-pointer"
+              className="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] flex items-center justify-center gap-1 border border-slate-700 transition-all hover:scale-105 cursor-pointer"
             >
               <Bike className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Demo Rider</span>
+              <span>Rider</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const mockUser = {
+                  id: 'u-admin-001',
+                  name: 'Store Admin Victoria',
+                  role: 'Admin' as const
+                };
+                auth.login(mockUser, `mock-jwt-token-${Date.now()}`);
+                navigate('/admin/dashboard');
+              }}
+              className="py-2.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] flex items-center justify-center gap-1 border border-slate-700 transition-all hover:scale-105 cursor-pointer"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-orange-400" />
+              <span>Admin</span>
             </button>
           </div>
         </div>
