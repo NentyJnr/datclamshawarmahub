@@ -4,6 +4,7 @@ import { MapPin, Navigation, Bike, ShoppingBag, ShieldCheck, ArrowLeft, Loader2,
 import { useStore } from '../store/useStore';
 import { AvailableRider } from '../types';
 import { DatclamLogo } from '../components/DatclamLogo';
+import { ConfirmModal } from '../components/ConfirmModal';
 
 export const CheckoutPage: React.FC = () => {
   const { cart, activeOrder } = useStore();
@@ -23,6 +24,7 @@ export const CheckoutPage: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
 
   useEffect(() => {
     fetchAvailableRiders(latitude, longitude);
@@ -377,12 +379,7 @@ export const CheckoutPage: React.FC = () => {
               <h2 className="text-xl font-bold text-white">Order Summary</h2>
               <button
                 type="button"
-                onClick={() => {
-                  if (window.confirm('Are you sure you want to cancel this draft order and clear your cart?')) {
-                    cart.clearCart();
-                    navigate('/');
-                  }
-                }}
+                onClick={() => setIsConfirmCancelOpen(true)}
                 className="text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg border border-rose-500/30 flex items-center gap-1.5 transition-all cursor-pointer"
                 title="Cancel Draft Order"
               >
@@ -474,6 +471,20 @@ export const CheckoutPage: React.FC = () => {
         </div>
 
       </form>
+
+      <ConfirmModal
+        isOpen={isConfirmCancelOpen}
+        title="Cancel Draft Order?"
+        message="Are you sure you want to cancel this draft order? This will remove all selected items from your cart and return you to the menu."
+        confirmText="Yes, Cancel Order"
+        cancelText="Keep Items"
+        onConfirm={() => {
+          setIsConfirmCancelOpen(false);
+          cart.clearCart();
+          navigate('/');
+        }}
+        onCancel={() => setIsConfirmCancelOpen(false)}
+      />
 
     </div>
   );

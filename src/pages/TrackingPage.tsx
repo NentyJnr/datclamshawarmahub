@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ShieldCheck, Clock, CheckCircle2, Bike, ChefHat, PackageCheck, AlertCircle, XCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { MapComponent } from '../components/MapComponent';
+import { ConfirmModal } from '../components/ConfirmModal';
 import { signalRService } from '../services/SignalRService';
 import { OrderStatus } from '../types';
 import { DatclamLogo } from '../components/DatclamLogo';
@@ -12,6 +13,7 @@ export const TrackingPage: React.FC = () => {
   const navigate = useNavigate();
   const { activeOrder } = useStore();
   const [copiedCode, setCopiedCode] = useState(false);
+  const [isConfirmCancelOpen, setIsConfirmCancelOpen] = useState(false);
 
   useEffect(() => {
     signalRService.startConnection();
@@ -94,12 +96,7 @@ export const TrackingPage: React.FC = () => {
 
           {currentOrder.orderStatus === 'Preparing' && (
             <button
-              onClick={() => {
-                if (window.confirm('Are you sure you want to cancel this active order?')) {
-                  activeOrder.clearActiveOrder();
-                  navigate('/');
-                }
-              }}
+              onClick={() => setIsConfirmCancelOpen(true)}
               className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg border border-rose-500/30 transition-all cursor-pointer"
               title="Cancel Order"
             >
@@ -220,6 +217,20 @@ export const TrackingPage: React.FC = () => {
         </div>
 
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmCancelOpen}
+        title="Cancel Active Order?"
+        message="Are you sure you want to cancel this active order? The kitchen and dispatch rider will be notified immediately."
+        confirmText="Yes, Cancel Order"
+        cancelText="Keep My Order"
+        onConfirm={() => {
+          setIsConfirmCancelOpen(false);
+          activeOrder.clearActiveOrder();
+          navigate('/');
+        }}
+        onCancel={() => setIsConfirmCancelOpen(false)}
+      />
 
     </div>
   );
