@@ -150,8 +150,10 @@ export const TrackingPage: React.FC = () => {
         <div className={`grid gap-4 ${isOnsitePickup ? 'grid-cols-1 sm:grid-cols-3' : 'grid-cols-2 md:grid-cols-4'}`}>
           {steps.map((step, idx) => {
             const Icon = step.icon;
-            const isCompleted = idx <= currentStepIdx;
-            const isCurrent = idx === currentStepIdx;
+            const isOrderDelivered = currentOrder.orderStatus === 'Delivered';
+            const isCompleted = isOrderDelivered || idx < currentStepIdx;
+            const isCurrent = !isOrderDelivered && idx === currentStepIdx;
+            const isFinalStep = idx === steps.length - 1;
 
             return (
               <div
@@ -159,18 +161,31 @@ export const TrackingPage: React.FC = () => {
                 className={`p-4 rounded-2xl border transition-all text-center flex flex-col items-center justify-center gap-2 ${
                   isCurrent
                     ? 'bg-red-500/15 border-datclam-red text-white shadow-lg shadow-red-500/20 scale-105'
-                    : isCompleted
-                    ? 'bg-slate-950 border-datclam-green/50 text-datclam-green'
+                    : isCompleted || (isOrderDelivered && isFinalStep)
+                    ? 'bg-slate-950 border-emerald-500/50 text-emerald-400 shadow-md shadow-emerald-500/10'
                     : 'bg-slate-950/50 border-slate-800 text-slate-600'
                 }`}
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold ${
-                  isCurrent ? 'bg-datclam-red text-white' : isCompleted ? 'bg-datclam-green text-white' : 'bg-slate-800 text-slate-500'
+                  isCurrent 
+                    ? 'bg-datclam-red text-white' 
+                    : (isCompleted || isOrderDelivered)
+                    ? 'bg-emerald-500 text-white' 
+                    : 'bg-slate-800 text-slate-500'
                 }`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <span className="text-xs font-bold">{step.label}</span>
-                {isCurrent && <span className="text-[10px] text-datclam-red font-black uppercase tracking-wider animate-pulse">In Progress</span>}
+                {isCurrent && (
+                  <span className="text-[10px] text-datclam-red font-black uppercase tracking-wider animate-pulse">
+                    In Progress
+                  </span>
+                )}
+                {isOrderDelivered && isFinalStep && (
+                  <span className="text-[10px] text-emerald-400 font-extrabold uppercase tracking-wider">
+                    ✓ Closed & Paid
+                  </span>
+                )}
               </div>
             );
           })}
