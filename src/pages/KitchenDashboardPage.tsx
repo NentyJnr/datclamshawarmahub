@@ -156,7 +156,7 @@ export const KitchenDashboardPage: React.FC = () => {
             className="px-5 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-black rounded-2xl shadow-lg shadow-orange-500/25 transition-all hover:scale-105 flex items-center gap-2 cursor-pointer border border-orange-400/40"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Create Onsite / Walk-in Order</span>
+            <span>Create Onsite / Walk-in Order</span>
           </button>
         </div>
       </div>
@@ -288,7 +288,7 @@ export const KitchenDashboardPage: React.FC = () => {
           <div className="text-center py-16 text-slate-500 space-y-2">
             <AlertCircle className="w-12 h-12 text-slate-600 mx-auto mb-2" />
             <p className="font-bold text-slate-400 text-base">No Active Prep Orders in Queue</p>
-            <p className="text-xs text-slate-600">Click "+ Create Onsite / Walk-in Order" above to place counter cash/POS orders.</p>
+            <p className="text-xs text-slate-600">Click "Create Onsite / Walk-in Order" above to place counter cash/POS orders.</p>
           </div>
         )}
       </div>
