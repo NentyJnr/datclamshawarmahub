@@ -138,14 +138,26 @@ const MOCK_TODAY_ORDERS: Order[] = [
 export const AdminDashboardPage: React.FC = () => {
   const { activeOrder } = useStore();
   const currentActiveOrder = activeOrder.order;
+  const storeOrdersList = activeOrder.ordersList || [];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('All');
   const [selectedOrderForModal, setSelectedOrderForModal] = useState<Order | null>(null);
 
-  // Combine store active order with mock historical list for today's comprehensive view
+  // Combine store orders (including onsite orders) with mock historical list for today's view
   const allTodayOrders = useMemo(() => {
     let list = [...MOCK_TODAY_ORDERS];
+    
+    // Merge store orders list
+    storeOrdersList.forEach((storeOrd) => {
+      const existingIdx = list.findIndex(o => o.id === storeOrd.id || o.orderNumber === storeOrd.orderNumber);
+      if (existingIdx >= 0) {
+        list[existingIdx] = storeOrd;
+      } else {
+        list = [storeOrd, ...list];
+      }
+    });
+
     if (currentActiveOrder) {
       const existingIdx = list.findIndex(o => o.id === currentActiveOrder.id || o.orderNumber === currentActiveOrder.orderNumber);
       if (existingIdx >= 0) {
@@ -155,7 +167,7 @@ export const AdminDashboardPage: React.FC = () => {
       }
     }
     return list;
-  }, [currentActiveOrder]);
+  }, [currentActiveOrder, storeOrdersList]);
 
   // Filtered orders
   const filteredOrders = useMemo(() => {
@@ -416,7 +428,9 @@ export const AdminDashboardPage: React.FC = () => {
                       {/* Grand Total */}
                       <td className="py-4 px-4 text-right font-black text-emerald-400 text-base">
                         ₦{order.grandTotal.toLocaleString()}
-                        <span className="block text-[10px] text-slate-500 font-normal">Paystack Online</span>
+                        <span className="block text-[10px] text-slate-400 font-semibold">
+                          {order.paymentMethod === 'Cash' ? '💵 Cash (Onsite)' : order.paymentMethod === 'POSTransfer' ? '💳 POS (Onsite)' : '✓ Paystack Online'}
+                        </span>
                       </td>
 
                       {/* Status Badge */}

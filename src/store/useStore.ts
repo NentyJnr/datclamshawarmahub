@@ -21,9 +21,11 @@ interface CartState {
 
 interface ActiveOrderState {
   order: Order | null;
+  ordersList: Order[];
   riderLocation: { latitude: number; longitude: number } | null;
   setActiveOrder: (order: Order) => void;
-  updateOrderStatus: (status: OrderStatus) => void;
+  addOrder: (order: Order) => void;
+  updateOrderStatus: (status: OrderStatus, orderId?: string) => void;
   updateRiderLocation: (lat: number, lon: number) => void;
   clearActiveOrder: () => void;
 }
@@ -114,26 +116,62 @@ export const useStore = create<AppStore>((set, get) => ({
 
   activeOrder: {
     order: JSON.parse(localStorage.getItem('shawarma_active_order') || 'null'),
+    ordersList: JSON.parse(localStorage.getItem('shawarma_orders_list') || '[]'),
     riderLocation: null,
 
     setActiveOrder: (order) => {
       localStorage.setItem('shawarma_active_order', JSON.stringify(order));
+      
+      const currentList: Order[] = JSON.parse(localStorage.getItem('shawarma_orders_list') || '[]');
+      const filtered = currentList.filter(o => o.id !== order.id);
+      const updatedList = [order, ...filtered];
+      localStorage.setItem('shawarma_orders_list', JSON.stringify(updatedList));
+
       set((state) => ({
         activeOrder: {
           ...state.activeOrder,
           order,
+          ordersList: updatedList,
           riderLocation: { latitude: order.deliveryLatitude, longitude: order.deliveryLongitude }
         }
       }));
     },
 
-    updateOrderStatus: (status) => {
+    addOrder: (order) => {
+      localStorage.setItem('shawarma_active_order', JSON.stringify(order));
+      const currentList: Order[] = JSON.parse(localStorage.getItem('shawarma_orders_list') || '[]');
+      const filtered = currentList.filter(o => o.id !== order.id);
+      const updatedList = [order, ...filtered];
+      localStorage.setItem('shawarma_orders_list', JSON.stringify(updatedList));
+
+      set((state) => ({
+        activeOrder: {
+          ...state.activeOrder,
+          order,
+          ordersList: updatedList,
+          riderLocation: { latitude: order.deliveryLatitude, longitude: order.deliveryLongitude }
+        }
+      }));
+    },
+
+    updateOrderStatus: (status, orderId) => {
       set((state) => {
-        if (!state.activeOrder.order) return state;
-        const updated = { ...state.activeOrder.order, orderStatus: status };
-        localStorage.setItem('shawarma_active_order', JSON.stringify(updated));
+        const targetId = orderId || state.activeOrder.order?.id;
+        if (!targetId && !state.activeOrder.order) return state;
+
+        let updatedOrder = state.activeOrder.order;
+        if (state.activeOrder.order && (state.activeOrder.order.id === targetId || !orderId)) {
+          updatedOrder = { ...state.activeOrder.order, orderStatus: status };
+          localStorage.setItem('shawarma_active_order', JSON.stringify(updatedOrder));
+        }
+
+        const updatedList = state.activeOrder.ordersList.map(o => 
+          o.id === targetId ? { ...o, orderStatus: status } : o
+        );
+        localStorage.setItem('shawarma_orders_list', JSON.stringify(updatedList));
+
         return {
-          activeOrder: { ...state.activeOrder, order: updated }
+          activeOrder: { ...state.activeOrder, order: updatedOrder, ordersList: updatedList }
         };
       });
     },

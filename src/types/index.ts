@@ -2,7 +2,7 @@ export type UserRole = 'Customer' | 'KitchenStaff' | 'DispatchRider' | 'Admin';
 
 export type OrderStatus = 'Preparing' | 'ReadyForPickup' | 'InTransit' | 'Delivered' | 'Cancelled';
 
-export type PaymentMethod = 'PaystackOnline' | 'Card' | 'Transfer' | 'Bank' | 'USSD' | 'OPay';
+export type PaymentMethod = 'PaystackOnline' | 'Card' | 'Transfer' | 'Bank' | 'USSD' | 'OPay' | 'Cash' | 'POSTransfer';
 export type PaymentStatus = 'Paid' | 'Pending';
 
 export interface MenuItem {
