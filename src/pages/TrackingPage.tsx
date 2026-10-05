@@ -198,7 +198,7 @@ export const TrackingPage: React.FC = () => {
               </div>
               <div className="flex justify-between">
                 <span>Payment Method:</span>
-                <span className="text-white font-bold">Cash On Delivery</span>
+                <span className="text-emerald-400 font-extrabold">Paystack Online (Paid)</span>
               </div>
             </div>
           </div>
@@ -209,7 +209,7 @@ export const TrackingPage: React.FC = () => {
               <div>
                 <h4 className="font-bold text-emerald-300 text-sm mb-1">Handshake Instructions</h4>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Present your 6-character code <strong className="text-amber-200">{currentOrder.pickupVerificationCode}</strong> to the rider upon arrival, and pay <strong className="text-white">₦{currentOrder.grandTotal.toLocaleString()}</strong> in cash.
+                  Present your 6-character code <strong className="text-amber-200">{currentOrder.pickupVerificationCode}</strong> to the rider upon arrival to verify delivery handshake. Your payment of <strong className="text-emerald-400">₦{currentOrder.grandTotal.toLocaleString()}</strong> has been verified online.
                 </p>
               </div>
             </div>

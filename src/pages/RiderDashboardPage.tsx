@@ -172,25 +172,25 @@ export const RiderDashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Cash Collection & Complete Delivery Action (5 Columns) */}
+          {/* Prepaid Delivery Verification & Handshake Action (5 Columns) */}
           <div className="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
             <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-4">
-              <DollarSign className="w-6 h-6 text-emerald-400" /> Cash Collection Handshake
+              <ShieldCheck className="w-6 h-6 text-emerald-400" /> Prepaid Delivery Verification
             </h2>
 
             <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center space-y-2">
-              <span className="text-xs uppercase font-bold text-slate-400 tracking-wider block">Exact Cash to Collect</span>
+              <span className="text-xs uppercase font-bold text-slate-400 tracking-wider block">Prepaid Order Total (Paid Online)</span>
               <div className="text-4xl font-black text-emerald-400">
                 ₦{currentOrder.grandTotal.toLocaleString()}
               </div>
-              <span className="inline-block text-[11px] text-slate-400 font-semibold">
-                Subtotal ₦{currentOrder.subtotal.toLocaleString()} + Fixed Delivery Fee ₦{currentOrder.fixedDeliveryFee.toLocaleString()}
+              <span className="inline-block text-[11px] text-emerald-300 font-semibold">
+                ✓ Paystack Online Payment Verified
               </span>
             </div>
 
             {completeSuccess && (
               <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 shrink-0" /> Delivery Completed & Cash Collected! Click below to close order ticket.
+                <CheckCircle2 className="w-5 h-5 shrink-0" /> Delivery Handshake Verified! Click below to close order ticket.
               </div>
             )}
 
@@ -209,7 +209,7 @@ export const RiderDashboardPage: React.FC = () => {
                 className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-4 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/25 transition-all hover:scale-[1.02] disabled:opacity-50 cursor-pointer"
               >
                 {completing ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
-                <span>Confirm COD Cash Collection (₦{currentOrder.grandTotal.toLocaleString()})</span>
+                <span>Verify Code & Complete Delivery</span>
               </button>
             )}
           </div>

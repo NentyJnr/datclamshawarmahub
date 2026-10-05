@@ -182,8 +182,8 @@ export const CheckoutPage: React.FC = () => {
       grandTotal: cart.getGrandTotal(),
       pickupVerificationCode: mockCode,
       orderStatus: 'Preparing' as const,
-      paymentMethod: 'CashOnDelivery' as const,
-      paymentStatus: 'PendingCollection' as const,
+      paymentMethod: 'PaystackOnline' as const,
+      paymentStatus: 'Pending' as const,
       createdAt: new Date().toISOString(),
       items: cart.items.map((i) => ({
         id: `item-${i.menuItem.id}`,
@@ -237,7 +237,7 @@ export const CheckoutPage: React.FC = () => {
           <p className="text-slate-400 text-sm">No account needed. Instant delivery straight to your doorstep.</p>
         </div>
         <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-extrabold rounded-full border border-emerald-500/30 flex items-center gap-1.5">
-          <ShieldCheck className="w-4 h-4" /> Cash On Delivery
+          <ShieldCheck className="w-4 h-4" /> Paystack Online Checkout
         </span>
       </div>
 
@@ -446,7 +446,7 @@ export const CheckoutPage: React.FC = () => {
                 <span>₦{cart.fixedDeliveryFee.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-white font-extrabold text-lg border-t border-slate-800 pt-3">
-                <span>Grand Total (Cash to Collect)</span>
+                <span>Grand Total</span>
                 <span className="text-datclam-green">₦{cart.getGrandTotal().toLocaleString()}</span>
               </div>
             </div>

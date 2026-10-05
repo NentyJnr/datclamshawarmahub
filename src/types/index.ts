@@ -2,8 +2,8 @@ export type UserRole = 'Customer' | 'KitchenStaff' | 'DispatchRider' | 'Admin';
 
 export type OrderStatus = 'Preparing' | 'ReadyForPickup' | 'InTransit' | 'Delivered' | 'Cancelled';
 
-export type PaymentMethod = 'CashOnDelivery';
-export type PaymentStatus = 'PendingCollection' | 'CashCollected';
+export type PaymentMethod = 'PaystackOnline' | 'Card' | 'Transfer' | 'Bank' | 'USSD' | 'OPay';
+export type PaymentStatus = 'Paid' | 'Pending';
 
 export interface MenuItem {
   id: string;
