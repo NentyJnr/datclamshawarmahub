@@ -5,6 +5,7 @@ import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { MenuPage } from './pages/MenuPage';
 import { CheckoutPage } from './pages/CheckoutPage';
+import { PaymentPage } from './pages/PaymentPage';
 import { TrackingPage } from './pages/TrackingPage';
 import { StaffLoginPage } from './pages/StaffLoginPage';
 import { KitchenDashboardPage } from './pages/KitchenDashboardPage';
@@ -19,6 +20,7 @@ export const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<MenuPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/payment" element={<PaymentPage />} />
             <Route path="/track/:orderId" element={<TrackingPage />} />
             <Route path="/staff/login" element={<StaffLoginPage />} />
             <Route path="/kitchen/dashboard" element={<KitchenDashboardPage />} />

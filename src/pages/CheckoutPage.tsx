@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Navigation, Bike, ShoppingBag, ShieldCheck, ArrowLeft, Loader2, AlertCircle, Plus, Minus, Trash2, X } from 'lucide-react';
+import { MapPin, Navigation, Bike, ShoppingBag, ShieldCheck, ArrowLeft, Loader2, AlertCircle, Plus, Minus, Trash2, X, CreditCard } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { AvailableRider } from '../types';
 import { DatclamLogo } from '../components/DatclamLogo';
@@ -196,9 +196,8 @@ export const CheckoutPage: React.FC = () => {
     };
 
     activeOrder.setActiveOrder(newOrder);
-    cart.clearCart();
     setIsSubmitting(false);
-    navigate(`/track/${newOrder.id}`);
+    navigate('/payment');
   };
 
   if (cart.items.length === 0) {
@@ -459,11 +458,11 @@ export const CheckoutPage: React.FC = () => {
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" /> Confirming Order...
+                  <Loader2 className="w-5 h-5 animate-spin" /> Preparing Payment Gateway...
                 </>
               ) : (
                 <>
-                  <Bike className="w-5 h-5" /> Confirm Order (Pay ₦{cart.getGrandTotal().toLocaleString()} COD)
+                  <CreditCard className="w-5 h-5" /> Confirm Order (Pay ₦{cart.getGrandTotal().toLocaleString()})
                 </>
               )}
             </button>
