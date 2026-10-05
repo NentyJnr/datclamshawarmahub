@@ -146,16 +146,16 @@ export const RiderDashboardPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Handshake Verification Code Card */}
+            {/* Customer Handshake Verification Code Card */}
             <div className="bg-gradient-to-br from-slate-950 to-slate-900 border-2 border-orange-500/40 rounded-2xl p-6 text-center space-y-2">
               <span className="text-xs uppercase font-bold text-slate-400 tracking-wider block">
-                Verification Code to Present at Kitchen
+                Customer Delivery Verification Code (`DAT-XXX`)
               </span>
               <div className="text-4xl font-mono font-black text-amber-300 tracking-widest">
                 {currentOrder.pickupVerificationCode}
               </div>
               <p className="text-[11px] text-slate-400">
-                Present this code to Kitchen staff to unlock package pickup & transition order to In Transit.
+                The customer will provide this verification code when you deliver the food. Verify code before completing delivery.
               </p>
             </div>
 
@@ -175,7 +175,7 @@ export const RiderDashboardPage: React.FC = () => {
           {/* Prepaid Delivery Verification & Handshake Action (5 Columns) */}
           <div className="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
             <h2 className="text-xl font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-4">
-              <ShieldCheck className="w-6 h-6 text-emerald-400" /> Prepaid Delivery Verification
+              <ShieldCheck className="w-6 h-6 text-emerald-400" /> Delivery Verification & Close Order
             </h2>
 
             <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center space-y-2">
@@ -209,7 +209,7 @@ export const RiderDashboardPage: React.FC = () => {
                 className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-4 px-4 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/25 transition-all hover:scale-[1.02] disabled:opacity-50 cursor-pointer"
               >
                 {completing ? <Loader2 className="w-5 h-5 animate-spin" /> : <ShieldCheck className="w-5 h-5" />}
-                <span>Verify Code & Complete Delivery</span>
+                <span>Verify Customer Code & Close Order</span>
               </button>
             )}
           </div>
