@@ -126,6 +126,15 @@ export const KitchenDashboardPage: React.FC = () => {
     }, 400);
   };
 
+  const handleCloseOnsiteOrder = (orderId?: string) => {
+    setUpdating(true);
+    setTimeout(() => {
+      activeOrder.updateOrderStatus('Delivered', orderId);
+      setSuccessMessage('Food handed over to walk-in customer. Onsite order closed successfully!');
+      setUpdating(false);
+    }, 400);
+  };
+
   return (
     <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
       
@@ -172,85 +181,108 @@ export const KitchenDashboardPage: React.FC = () => {
 
         {ordersQueue.length > 0 ? (
           <div className="space-y-6">
-            {ordersQueue.map((order) => (
-              <div key={order.id} className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
-                
-                {/* Order Header Info */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-orange-400 font-extrabold uppercase tracking-wider">Order ID</span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${
-                        order.paymentMethod === 'Cash' || order.paymentMethod === 'POSTransfer'
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-                          : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                      }`}>
-                        {order.paymentMethod === 'Cash' ? '💵 Onsite Cash Paid' : order.paymentMethod === 'POSTransfer' ? '💳 Onsite POS Paid' : '✓ Paystack Online'}
+            {ordersQueue.map((order) => {
+              const isOnsiteTakeaway = order.dispatchRiderId === 'onsite-pickup' || order.riderName === 'Walk-in Counter Pickup' || order.fixedDeliveryFee === 0;
+
+              return (
+                <div key={order.id} className="bg-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
+                  
+                  {/* Order Header Info */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-orange-400 font-extrabold uppercase tracking-wider">Order ID</span>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold border ${
+                          order.paymentMethod === 'Cash' || order.paymentMethod === 'POSTransfer'
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                            : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                        }`}>
+                          {order.paymentMethod === 'Cash' ? '💵 Onsite Cash Paid' : order.paymentMethod === 'POSTransfer' ? '💳 Onsite POS Paid' : '✓ Paystack Online'}
+                        </span>
+                      </div>
+                      <span className="text-2xl sm:text-3xl font-black text-white font-mono">{order.orderNumber}</span>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <span className="text-xs text-slate-400 block">Customer / Fulfillment</span>
+                      <span className="text-sm font-bold text-slate-200">{order.customerName} ({order.riderName})</span>
+                    </div>
+                  </div>
+
+                  {/* Items List to Prepare */}
+                  <div className="space-y-3">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Items to Prepare:</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {order.items.map((i) => (
+                        <div key={i.id} className="flex justify-between items-center text-sm bg-slate-900 p-4 rounded-2xl border border-slate-800/80">
+                          <span className="font-bold text-white">{i.quantity}× {i.menuItemName}</span>
+                          <span className="text-emerald-400 font-extrabold text-sm">₦{i.totalPrice.toLocaleString()}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Status & Action Buttons */}
+                  <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-slate-400">Current Status:</span>
+                      <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-orange-500/20 text-orange-300 border border-orange-500/40 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5" /> {order.orderStatus}
                       </span>
                     </div>
-                    <span className="text-2xl sm:text-3xl font-black text-white font-mono">{order.orderNumber}</span>
+
+                    <div className="flex items-center gap-3 w-full sm:w-auto">
+                      {order.orderStatus === 'Delivered' ? (
+                        <button
+                          disabled
+                          className="w-full sm:w-auto bg-emerald-500/20 text-emerald-300 px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 border border-emerald-500/40"
+                        >
+                          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                          <span>Order Handed Over & Closed</span>
+                        </button>
+                      ) : order.orderStatus === 'Preparing' ? (
+                        isOnsiteTakeaway ? (
+                          <button
+                            onClick={() => handleCloseOnsiteOrder(order.id)}
+                            disabled={updating}
+                            className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition-all hover:scale-105 cursor-pointer border-2 border-emerald-400/40"
+                          >
+                            <PackageCheck className="w-5 h-5" />
+                            <span>Handover Package & Close Order</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleMarkCompleted(order.id)}
+                            disabled={updating}
+                            className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition-all hover:scale-105 cursor-pointer"
+                          >
+                            <PackageCheck className="w-5 h-5" />
+                            <span>Mark Preparation Completed (Notify Rider)</span>
+                          </button>
+                        )
+                      ) : order.orderStatus === 'ReadyForPickup' ? (
+                        <button
+                          disabled
+                          className="w-full sm:w-auto bg-emerald-500/20 text-emerald-300 px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 border border-emerald-500/40"
+                        >
+                          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                          <span>Preparation Complete — Awaiting Rider Pickup</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleStartPrep(order.id)}
+                          disabled={updating}
+                          className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-orange-500/30 transition-all hover:scale-105 cursor-pointer"
+                        >
+                          <ChefHat className="w-5 h-5" />
+                          <span>Start Preparing Shawarma</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-left sm:text-right">
-                    <span className="text-xs text-slate-400 block">Customer / Fulfillment</span>
-                    <span className="text-sm font-bold text-slate-200">{order.customerName} ({order.riderName})</span>
-                  </div>
+
                 </div>
-
-                {/* Items List to Prepare */}
-                <div className="space-y-3">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Items to Prepare:</span>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {order.items.map((i) => (
-                      <div key={i.id} className="flex justify-between items-center text-sm bg-slate-900 p-4 rounded-2xl border border-slate-800/80">
-                        <span className="font-bold text-white">{i.quantity}× {i.menuItemName}</span>
-                        <span className="text-emerald-400 font-extrabold text-sm">₦{i.totalPrice.toLocaleString()}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Status & Action Buttons */}
-                <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-slate-400">Current Status:</span>
-                    <span className="px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-orange-500/20 text-orange-300 border border-orange-500/40 flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5" /> {order.orderStatus}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    {order.orderStatus === 'Preparing' ? (
-                      <button
-                        onClick={() => handleMarkCompleted(order.id)}
-                        disabled={updating}
-                        className="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/30 transition-all hover:scale-105 cursor-pointer"
-                      >
-                        <PackageCheck className="w-5 h-5" />
-                        <span>Mark Preparation Completed</span>
-                      </button>
-                    ) : order.orderStatus === 'ReadyForPickup' ? (
-                      <button
-                        disabled
-                        className="w-full sm:w-auto bg-emerald-500/20 text-emerald-300 px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 border border-emerald-500/40"
-                      >
-                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                        <span>Preparation Complete — Awaiting Pickup</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleStartPrep(order.id)}
-                        disabled={updating}
-                        className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-6 py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-xl shadow-orange-500/30 transition-all hover:scale-105 cursor-pointer"
-                      >
-                        <ChefHat className="w-5 h-5" />
-                        <span>Start Preparing Shawarma</span>
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           <div className="text-center py-16 text-slate-500 space-y-2">
