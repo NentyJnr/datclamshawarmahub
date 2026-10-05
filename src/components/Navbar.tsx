@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingBag, LogOut, Compass } from 'lucide-react';
+import { ShoppingBag, Compass } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { DatclamLogo } from './DatclamLogo';
 import navbarBgImg from '../assets/navbar-bg.png';
@@ -8,7 +8,7 @@ import navbarBgImg from '../assets/navbar-bg.png';
 export const Navbar: React.FC<{ onNavigateHome?: () => void; onNavigateMenu?: () => void }> = ({
   onNavigateHome,
 }) => {
-  const { cart, auth, activeOrder } = useStore();
+  const { cart, activeOrder } = useStore();
   const navigate = useNavigate();
   const cartCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -97,35 +97,6 @@ export const Navbar: React.FC<{ onNavigateHome?: () => void; onNavigateMenu?: ()
                 {cartCount}
               </span>
             </Link>
-          )}
-
-          {auth.user && (
-            <div className="flex items-center gap-2">
-              <Link
-                to={
-                  auth.user.role === 'Admin'
-                    ? '/admin/dashboard'
-                    : auth.user.role === 'KitchenStaff'
-                    ? '/kitchen/dashboard'
-                    : '/rider/dashboard'
-                }
-                className="px-3.5 py-2 rounded-xl bg-slate-900 text-orange-400 font-extrabold text-xs border border-slate-700 hover:bg-slate-800 transition-all flex items-center gap-1.5 shadow-sm"
-              >
-                <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                <span>{auth.user.role === 'Admin' ? 'Admin Portal' : auth.user.role === 'KitchenStaff' ? 'Kitchen Portal' : 'Rider Portal'}</span>
-              </Link>
-
-              <button
-                onClick={() => {
-                  auth.logout();
-                  navigate('/staff/login');
-                }}
-                className="p-2.5 rounded-xl bg-stone-100 border border-stone-300 hover:bg-rose-50 hover:text-rose-600 text-stone-700 transition-all shadow-sm cursor-pointer"
-                title="Logout Staff"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
           )}
         </nav>
 
