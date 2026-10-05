@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   ChefHat, 
   ShieldCheck, 
@@ -15,14 +16,22 @@ import {
   User, 
   Bike, 
   Calculator,
-  Store
+  Store,
+  LogOut
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { MENU_ITEMS } from '../constants/menuItems';
 import { Order, OrderItem, PaymentMethod } from '../types';
 
 export const KitchenDashboardPage: React.FC = () => {
-  const { activeOrder } = useStore();
+  const { activeOrder, auth } = useStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate('/staff/login');
+  };
+
   const currentOrder = activeOrder.order;
   const ordersQueue = activeOrder.ordersList.length > 0 
     ? activeOrder.ordersList 
@@ -150,13 +159,21 @@ export const KitchenDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setShowOnsiteModal(true)}
             className="px-5 py-3 bg-[#008751] hover:bg-[#007043] text-white text-xs font-black rounded-2xl shadow-lg shadow-[#008751]/30 transition-all hover:scale-105 flex items-center gap-2 cursor-pointer border border-emerald-400/40"
           >
             <Plus className="w-4 h-4" />
             <span>Create Onsite / Walk-in Order</span>
+          </button>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-3 bg-red-600/90 hover:bg-red-700 text-white text-xs font-black rounded-2xl shadow-lg transition-all hover:scale-105 flex items-center gap-2 cursor-pointer border border-red-500/40"
+            title="Logout Staff"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout Staff</span>
           </button>
         </div>
       </div>

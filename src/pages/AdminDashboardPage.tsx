@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -22,7 +23,8 @@ import {
   ArrowDownToLine,
   Store,
   RefreshCw,
-  User
+  User,
+  LogOut
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { Order } from '../types';
@@ -190,9 +192,15 @@ const MOCK_HISTORICAL_ORDERS: Order[] = [
 ];
 
 export const AdminDashboardPage: React.FC = () => {
-  const { activeOrder } = useStore();
+  const { activeOrder, auth } = useStore();
+  const navigate = useNavigate();
   const currentActiveOrder = activeOrder.order;
   const storeOrdersList = activeOrder.ordersList || [];
+
+  const handleLogout = () => {
+    auth.logout();
+    navigate('/staff/login');
+  };
 
   // Active Admin Sub-Navbar Tab State ('orders' | 'reports')
   const [activeAdminTab, setActiveAdminTab] = useState<'orders' | 'reports'>('orders');
@@ -407,10 +415,21 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 bg-stone-900/90 px-4 py-2.5 rounded-2xl border border-stone-700 text-xs font-bold text-amber-200 shadow-md">
-          <Calendar className="w-4 h-4 text-emerald-400" />
-          <span>{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-3 bg-stone-900/90 px-4 py-2.5 rounded-2xl border border-stone-700 text-xs font-bold text-amber-200 shadow-md">
+            <Calendar className="w-4 h-4 text-emerald-400" />
+            <span>{new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2.5 bg-red-600/90 hover:bg-red-700 text-white rounded-2xl border border-red-500/40 text-xs font-black flex items-center gap-2 transition-all hover:scale-105 cursor-pointer shadow-md"
+            title="Logout Staff"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout Staff</span>
+          </button>
         </div>
       </div>
 
@@ -444,9 +463,20 @@ export const AdminDashboardPage: React.FC = () => {
 
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-stone-500 pr-2">
-          <ShieldCheck className="w-4 h-4 text-[#008751]" />
-          <span>Admin Controls Active</span>
+        <div className="flex items-center gap-3 pr-2">
+          <div className="hidden md:flex items-center gap-2 text-xs font-bold text-stone-500">
+            <ShieldCheck className="w-4 h-4 text-[#008751]" />
+            <span>Admin Controls Active</span>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 rounded-xl bg-stone-900 hover:bg-red-600 text-white font-extrabold text-xs transition-all flex items-center gap-2 shadow-sm cursor-pointer"
+            title="Logout and Return to Login"
+          >
+            <LogOut className="w-3.5 h-3.5 text-red-400" />
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 

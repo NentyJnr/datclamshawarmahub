@@ -1,9 +1,21 @@
 import React, { useState } from 'react';
-import { Bike, Navigation, CheckCircle2, DollarSign, MapPin, ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Bike, Navigation, CheckCircle2, DollarSign, MapPin, ShieldCheck, Loader2, AlertCircle, LogOut } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export const RiderDashboardPage: React.FC = () => {
-  const { activeOrder } = useStore();
+  const { activeOrder, auth } = useStore();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    if (isStreamingGps) {
+      clearInterval(gpsSimInterval);
+      setIsStreamingGps(false);
+    }
+    auth.logout();
+    navigate('/staff/login');
+  };
+
   const currentOrder = activeOrder.order;
 
   const [isStreamingGps, setIsStreamingGps] = useState(false);
@@ -104,18 +116,29 @@ export const RiderDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* GPS Live Streaming Toggle */}
-        <button
-          onClick={toggleGpsStreaming}
-          className={`px-5 py-2.5 rounded-2xl text-xs font-black flex items-center gap-2 transition-all border cursor-pointer ${
-            isStreamingGps
-              ? 'bg-emerald-500 text-white border-emerald-400 shadow-md animate-pulse'
-              : 'bg-stone-800 text-amber-200 border-stone-700 hover:border-amber-400'
-          }`}
-        >
-          <Navigation className={`w-4 h-4 ${isStreamingGps ? 'animate-spin' : ''}`} />
-          {isStreamingGps ? 'Live GPS Stream ACTIVE' : 'Start Periodic GPS Stream'}
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* GPS Live Streaming Toggle */}
+          <button
+            onClick={toggleGpsStreaming}
+            className={`px-5 py-2.5 rounded-2xl text-xs font-black flex items-center gap-2 transition-all border cursor-pointer ${
+              isStreamingGps
+                ? 'bg-emerald-500 text-white border-emerald-400 shadow-md animate-pulse'
+                : 'bg-stone-800 text-amber-200 border-stone-700 hover:border-amber-400'
+            }`}
+          >
+            <Navigation className={`w-4 h-4 ${isStreamingGps ? 'animate-spin' : ''}`} />
+            {isStreamingGps ? 'Live GPS Stream ACTIVE' : 'Start Periodic GPS Stream'}
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2.5 bg-red-600/90 hover:bg-red-700 text-white text-xs font-black rounded-2xl shadow-lg transition-all hover:scale-105 flex items-center gap-2 cursor-pointer border border-red-500/40"
+            title="Logout Staff"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout Staff</span>
+          </button>
+        </div>
       </div>
 
       {currentOrder ? (
