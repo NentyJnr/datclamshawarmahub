@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { WhatsAppButton } from './components/WhatsAppButton';
@@ -12,28 +12,42 @@ import { KitchenDashboardPage } from './pages/KitchenDashboardPage';
 import { RiderDashboardPage } from './pages/RiderDashboardPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 
+const AppContent: React.FC = () => {
+  const location = useLocation();
+  const isStaffRoute = 
+    location.pathname.startsWith('/staff') ||
+    location.pathname.startsWith('/kitchen') ||
+    location.pathname.startsWith('/rider') ||
+    location.pathname.startsWith('/admin');
+
+  return (
+    <div className="min-h-screen flex flex-col justify-between bg-[#FFFBF5] text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
+      {!isStaffRoute && <Navbar />}
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<MenuPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/track/:orderId" element={<TrackingPage />} />
+          <Route path="/staff/login" element={<StaffLoginPage />} />
+          <Route path="/kitchen/dashboard" element={<KitchenDashboardPage />} />
+          <Route path="/rider/dashboard" element={<RiderDashboardPage />} />
+          <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        </Routes>
+      </main>
+      {!isStaffRoute && <Footer />}
+      {!isStaffRoute && <WhatsAppButton />}
+    </div>
+  );
+};
+
 export const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col justify-between bg-[#FFFBF5] text-stone-900 font-['Plus_Jakarta_Sans',sans-serif]">
-        <Navbar />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<MenuPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/payment" element={<PaymentPage />} />
-            <Route path="/track/:orderId" element={<TrackingPage />} />
-            <Route path="/staff/login" element={<StaffLoginPage />} />
-            <Route path="/kitchen/dashboard" element={<KitchenDashboardPage />} />
-            <Route path="/rider/dashboard" element={<RiderDashboardPage />} />
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-          </Routes>
-        </main>
-        <Footer />
-        <WhatsAppButton />
-      </div>
+      <AppContent />
     </BrowserRouter>
   );
 };
 
 export default App;
+

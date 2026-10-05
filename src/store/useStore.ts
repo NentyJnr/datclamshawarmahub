@@ -138,7 +138,6 @@ export const useStore = create<AppStore>((set, get) => ({
     },
 
     addOrder: (order) => {
-      localStorage.setItem('shawarma_active_order', JSON.stringify(order));
       const currentList: Order[] = JSON.parse(localStorage.getItem('shawarma_orders_list') || '[]');
       const filtered = currentList.filter(o => o.id !== order.id);
       const updatedList = [order, ...filtered];
@@ -147,9 +146,7 @@ export const useStore = create<AppStore>((set, get) => ({
       set((state) => ({
         activeOrder: {
           ...state.activeOrder,
-          order,
-          ordersList: updatedList,
-          riderLocation: { latitude: order.deliveryLatitude, longitude: order.deliveryLongitude }
+          ordersList: updatedList
         }
       }));
     },
@@ -160,7 +157,7 @@ export const useStore = create<AppStore>((set, get) => ({
         if (!targetId && !state.activeOrder.order) return state;
 
         let updatedOrder = state.activeOrder.order;
-        if (state.activeOrder.order && (state.activeOrder.order.id === targetId || !orderId)) {
+        if (state.activeOrder.order && state.activeOrder.order.id === targetId) {
           updatedOrder = { ...state.activeOrder.order, orderStatus: status };
           localStorage.setItem('shawarma_active_order', JSON.stringify(updatedOrder));
         }
